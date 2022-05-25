@@ -27,7 +27,16 @@ class MyApp extends StatelessWidget {
             final babies = Babies(age: dogAge);
             return babies.getBabies();
           },
-        )
+        ),
+        StreamProvider<String>(
+          initialData: "Bark 0 times",
+          create: (context) {
+            // create는 한 번만 호출되기 때문에, watch를 여기서 사용하는 것은 논리적으로 맞지 않는다.
+            final int dogAge = context.read<Dog>().age;
+            final babies = Babies(age: dogAge * 2);
+            return babies.bark();
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'Provider 05',
@@ -109,6 +118,11 @@ class Age extends StatelessWidget {
         SizedBox(height: 10.0),
         Text(
           "- number of babies: ${context.watch<int>()}",
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 10.0),
+        Text(
+          " - ${context.watch<String>()}",
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 20.0),
