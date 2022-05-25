@@ -13,13 +13,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Provider 03',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider<Dog>(
+      create: (context) => Dog(name: 'dog04', breed: 'breed04'),
+      child: MaterialApp(
+        title: 'Provider 04',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -32,30 +35,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final dog = Dog(name: "dog03", breed: "breed03");
-
-  @override
-  void initState() {
-    // TODO: implement initState
-
-    dog.addListener(dogListener);
-  }
-
-  void dogListener() {
-    print("age listener: ${dog.age}");
-  }
-
-  @override
-  void dispose() {
-    dog.removeListener(dogListener);
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Provider 03'),
+        title: Text('Provider 04'),
       ),
       body: Center(
         child: Column(
@@ -63,11 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '- name: ${dog.name}',
+              '- name: ${Provider.of<Dog>(context, listen: false).name}',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
-            BreedAndAge(dog: dog),
+            BreedAndAge(),
           ],
         ),
       ),
@@ -76,10 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class BreedAndAge extends StatelessWidget {
-  final Dog dog;
   const BreedAndAge({
     Key? key,
-    required this.dog,
   }) : super(key: key);
 
   @override
@@ -87,21 +69,19 @@ class BreedAndAge extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '- breed: ${dog.breed}',
+          '- breed: ${Provider.of<Dog>(context, listen: false).breed}',
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 10.0),
-        Age(dog: dog),
+        Age(),
       ],
     );
   }
 }
 
 class Age extends StatelessWidget {
-  final Dog dog;
   const Age({
     Key? key,
-    required this.dog,
   }) : super(key: key);
 
   @override
@@ -109,12 +89,12 @@ class Age extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '- age: ${dog.age}',
+          '- age: ${Provider.of<Dog>(context).age}',
           style: TextStyle(fontSize: 20.0),
         ),
         SizedBox(height: 20.0),
         ElevatedButton(
-          onPressed: () => dog.grow(),
+          onPressed: () => Provider.of<Dog>(context, listen: false).grow(),
           child: Text(
             'Grow',
             style: TextStyle(fontSize: 20.0),
